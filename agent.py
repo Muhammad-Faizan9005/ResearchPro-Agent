@@ -25,6 +25,7 @@ from langgraph.prebuilt import ToolNode
 from src.schemas import ResearchState
 from src.middleware import get_dynamic_system_prompt, format_tool_error
 from src.tools import web_search, scrape_webpage
+from src.utils import ConversationMemory
 
 
 class AgentConfig:
@@ -35,12 +36,16 @@ class AgentConfig:
         model_name: str = "gpt-oss:120b-cloud",
         base_url: str = "http://localhost:11434",
         temperature: float = 0.3,
-        user_level: Literal["expert", "beginner", "general"] = "general"
+        user_level: Literal["expert", "beginner", "general"] = "general",
+        save_conversations: bool = True,
+        storage_dir: str = "conversations"
     ):
         self.model_name = model_name
         self.base_url = base_url
         self.temperature = temperature
         self.user_level = user_level
+        self.save_conversations = save_conversations
+        self.storage_dir = storage_dir
 
 
 class ResearchProAgent:
@@ -54,6 +59,9 @@ class ResearchProAgent:
     def __init__(self, config: AgentConfig = None):
         """Initialize the ResearchPro Agent."""
         self.config = config or AgentConfig()
+        
+        # Initialize conversation memory
+        self.memory = ConversationMemory(self.config.storage_dir) if self.config.save_conversations else None
         
         # Initialize local Ollama LLM
         self.llm = ChatOllama(
@@ -191,6 +199,23 @@ class ResearchProAgent:
                 initial_state,
                 config={"recursion_limit": max_iterations}
             )
+            
+            # Save conversation to memory
+            if self.memory:
+                answer = self.get_final_answer(final_state)
+                conversation_id = self.memory.save_conversation(
+                    query=query,
+                    answer=answer,
+                    messages=final_state["messages"],
+                    citations=final_state.get("citations", []),
+                    metadata={
+                        "model": self.config.model_name,
+                        "temperature": self.config.temperature,
+                        "user_level": self.config.user_level
+                    }
+                )
+                final_state["conversation_id"] = conversation_id
+            
             return final_state
         except Exception as e:
             error_msg = format_tool_error(e, "agent")
@@ -227,8 +252,46 @@ class ResearchProAgent:
             "progress": 0
         }
         
+        final_state = None
         for state in self.graph.stream(initial_state):
+            final_state = state
             yield state
+        
+        # Save conversation after streaming completes
+        if self.memory and final_state:
+            # Get the actual state from the last node update
+            last_node_state = list(final_state.values())[0] if final_state else None
+            if last_node_state:
+                answer = self.get_final_answer(last_node_state)
+                conversation_id = self.memory.save_conversation(
+                    query=query,
+                    answer=answer,
+                    messages=last_node_state["messages"],
+                    citations=last_node_state.get("citations", []),
+                    metadata={
+                        "model": self.config.model_name,
+                        "temperature": self.config.temperature,
+                        "user_level": self.config.user_level
+                    }
+                )
+    
+    def get_conversation_history(self, limit: int = 50) -> list:
+        """Get list of saved conversations."""
+        if not self.memory:
+            return []
+        return self.memory.list_conversations(limit)
+    
+    def load_conversation(self, conversation_id: str) -> dict:
+        """Load a specific conversation by ID."""
+        if not self.memory:
+            return None
+        return self.memory.load_conversation(conversation_id)
+    
+    def delete_conversation(self, conversation_id: str) -> bool:
+        """Delete a conversation by ID."""
+        if not self.memory:
+            return False
+        return self.memory.delete_conversation(conversation_id)
 
 
 # Convenience function for quick usage

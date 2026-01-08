@@ -54,10 +54,12 @@ log/
 # Data files
 data/
 *.csv
-*.json
 *.xml
 *.db
 *.sqlite
+
+# Conversation History
+conversations/
 *.sqlite3
 
 # Testing
