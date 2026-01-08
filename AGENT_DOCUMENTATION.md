@@ -1,834 +1,1008 @@
-# Intelligent Research & Analysis Agent - Comprehensive Documentation
+﻿# ResearchPro Agent - Complete Documentation
 
-## 📋 Table of Contents
+##  Table of Contents
 1. [Project Overview](#project-overview)
 2. [Agent Architecture](#agent-architecture)
 3. [Core Components](#core-components)
-4. [Technical Implementation](#technical-implementation)
-5. [Use Cases & Scenarios](#use-cases--scenarios)
-6. [Teaching Points](#teaching-points)
-7. [Code Structure](#code-structure)
+4. [Conversation Memory System](#conversation-memory-system)
+5. [Technical Implementation](#technical-implementation)
+6. [Usage Guide](#usage-guide)
+7. [API Reference](#api-reference)
+8. [Teaching Points](#teaching-points)
 
 ---
 
-## 🎯 Project Overview
+##  Project Overview
 
 ### Agent Name: **ResearchPro Agent**
 
 ### Problem Statement
-Students, researchers, and professionals need to analyze complex topics that require:
-- **Multiple data sources** (web search, academic papers, documentation)
-- **Data processing** (calculations, statistics, data analysis)
-- **Content generation** (reports, summaries, presentations)
-- **Quality assurance** (fact-checking, citation tracking)
+Modern research and information gathering requires:
+- **Real-time web information** for current events and data
+- **Context-aware conversations** across multiple queries
+- **Persistent conversation history** for continuity
+- **Clean, readable output** for terminal interfaces
+- **Session management** for organized research
 
 ### Solution
-An intelligent autonomous agent that combines the power of Large Language Models with specialized tools to conduct thorough research, analyze data, and generate comprehensive reports with proper citations.
+An intelligent conversational agent built with LangChain and Ollama that:
+- Conducts web research with DuckDuckGo integration
+- Maintains conversation context across sessions
+- Automatically saves and organizes chat history
+- Provides clean, terminal-friendly formatted responses
+- Supports loading and continuing previous conversations
 
 ### Real-World Applications
-1. **Academic Research**: Literature reviews, research summaries
-2. **Business Intelligence**: Market research, competitor analysis
-3. **Technical Documentation**: API analysis, technology comparisons
-4. **Financial Analysis**: Company research, investment decisions
-5. **Content Creation**: Blog posts, articles with research backing
+1. **Comparative Research**: Product comparisons (cars, tech, services)
+2. **Decision Support**: Gathering information for purchase decisions
+3. **Learning Assistant**: Explaining complex topics with follow-up questions
+4. **Current Events**: Research on recent news and developments
+5. **Technical Research**: Understanding technologies, frameworks, tools
 
 ---
 
-## 🏗️ Agent Architecture
+##  Agent Architecture
 
 ### High-Level Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     USER INPUT                               │
-│         "Research AI trends in healthcare 2024"              │
-└──────────────────┬──────────────────────────────────────────┘
-                   │
-                   ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  RESEARCHPRO AGENT                           │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │         AGENT STATE (Memory & Context)                │  │
-│  │  • Conversation history                               │  │
-│  │  • Research progress tracker                          │  │
-│  │  • Citation database                                  │  │
-│  │  • User preferences                                   │  │
-│  │  • Quality metrics                                    │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                                                              │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │              MODEL (Reasoning Engine)                 │  │
-│  │  • Dynamic model selection (GPT-4/Claude)             │  │
-│  │  • Temperature control                                │  │
-│  │  • Token management                                   │  │
-│  │  • Structured output formatting                       │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                                                              │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │                  TOOL SUITE                           │  │
-│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐      │  │
-│  │  │ Web Search │  │ Calculator │  │ PDF Reader │      │  │
-│  │  └────────────┘  └────────────┘  └────────────┘      │  │
-│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐      │  │
-│  │  │   Scraper  │  │  Database  │  │   Analyzer │      │  │
-│  │  └────────────┘  └────────────┘  └────────────┘      │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                                                              │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │                  MIDDLEWARE                           │  │
-│  │  • Message trimming                                   │  │
-│  │  • Error handling                                     │  │
-│  │  • Tool retry logic                                   │  │
-│  │  • Dynamic system prompts                             │  │
-│  │  • Cache management                                   │  │
-│  └───────────────────────────────────────────────────────┘  │
-└──────────────────┬──────────────────────────────────────────┘
-                   │
-                   ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   OUTPUT                                     │
-│  • Structured research report                                │
-│  • Citations and sources                                     │
-│  • Data visualizations                                       │
-│  • Confidence scores                                         │
-│  • Follow-up recommendations                                 │
-└─────────────────────────────────────────────────────────────┘
+
+                     USER INPUT                               
+         "Compare Honda Civic and Toyota Corolla"             
+
+                   
+                   
+
+                  RESEARCHPRO AGENT                           
+    
+           AGENT STATE (Context Management)                
+     Conversation messages (context)                      
+     Active conversation ID                               
+     Progress tracking                                    
+     Citations accumulation                               
+    
+                                                              
+    
+           OLLAMA LLM (gpt-oss:120b-cloud)                
+     Local inference (no API keys)                        
+     Tool binding for structured calls                    
+     Temperature control (0.3 default)                    
+     Context window management                            
+    
+                                                              
+    
+                    TOOL SUITE (2 Tools)                   
+                              
+     web_search             scrape_                   
+     (DuckDuck              webpage                   
+       Go)                  (BeautifulS               
+                 oup)                     
+                                            
+    
+                                                              
+    
+             CONVERSATION MEMORY                           
+     Automatic conversation saving                        
+     Session-based file organization                      
+     Context loading for continuity                       
+     Meaningful naming from queries                       
+    
+                                                              
+    
+                    MIDDLEWARE                             
+     Dynamic system prompts                               
+     Error handling & formatting                          
+     Terminal-friendly output formatting                  
+    
+
+                   
+                   
+
+                   OUTPUT                                     
+   Clean, terminal-friendly text                             
+   Structured comparisons and analysis                       
+   Source citations when available                           
+   Conversation saved to JSON                                
+
 ```
 
-### ReAct Loop Visualization
+### ReAct Loop (Reasoning + Acting)
 
 ```
-Start
-  │
-  ▼
-┌────────────────────┐
-│  User Query Input  │
-└─────────┬──────────┘
-          │
-          ▼
-┌───────────────────────────────────────────────────┐
-│          REASONING PHASE                          │
-│  "To answer this, I need to:                      │
-│   1. Search for recent AI healthcare trends       │
-│   2. Gather statistics and data                   │
-│   3. Analyze key players and technologies"        │
-└─────────┬─────────────────────────────────────────┘
-          │
-          ▼
-┌───────────────────────────────────────────────────┐
-│          ACTION PHASE                             │
-│  Tool Calls (Parallel):                           │
-│  • search_web("AI healthcare trends 2024")        │
-│  • get_statistics("AI healthcare market")         │
-└─────────┬─────────────────────────────────────────┘
-          │
-          ▼
-┌───────────────────────────────────────────────────┐
-│         OBSERVATION PHASE                         │
-│  Tool Results:                                    │
-│  • Found 15 articles on AI in healthcare          │
-│  • Market size: $11B (2024), projected $188B      │
-└─────────┬─────────────────────────────────────────┘
-          │
-          ▼
-┌───────────────────────────────────────────────────┐
-│      REASONING PHASE (Iteration 2)                │
-│  "Now I need to:                                  │
-│   1. Extract key findings from articles           │
-│   2. Analyze specific use cases                   │
-│   3. Verify with additional sources"              │
-└─────────┬─────────────────────────────────────────┘
-          │
-          ▼
-      [Continue loop until completion]
-          │
-          ▼
-┌───────────────────────────────────────────────────┐
-│           FINAL ANSWER                            │
-│  Comprehensive research report with:              │
-│  • Executive summary                              │
-│  • Detailed findings                              │
-│  • Citations                                      │
-│  • Recommendations                                │
-└───────────────────────────────────────────────────┘
+START
+  
+  
+
+   USER QUERY         "Compare Honda and Toyota"
+
+       
+       
+
+  AGENT REASONING     Should I search the web for current info?
+  (LLM with tools)     YES, need recent pricing/specs
+
+       
+       
+
+  TOOL EXECUTION      web_search("Honda Civic vs Toyota Corolla 2024")
+  (web_search)         Returns: search results with links
+
+       
+       
+
+  AGENT REASONING     "STOP. I have the info. Generate final answer."
+  (LLM without tools)  Synthesizes comprehensive comparison
+
+       
+       
+
+  FINAL ANSWER        Clean, formatted comparison
+  (Save to memory)     Conversation saved to JSON
+
+       
+       
+      END
 ```
+
+**Key Features:**
+- **One-shot tool use**: Agent calls tool once, then generates answer
+- **Explicit stop instruction**: Forces final answer after tool results
+- **Context preservation**: Full conversation stored for reload
+- **Smart iteration control**: Max 2 iterations (1 tool call + 1 answer)
 
 ---
 
-## 🧩 Core Components
+##  Core Components
 
-### 1. **Model Configuration**
+### 1. **State Management** (src/schemas/state.py)
 
-**Static Model** (Default Operation)
 ```python
-from langchain.agents import create_agent
-from langchain_openai import ChatOpenAI
-
-model = ChatOpenAI(
-    model="gpt-4o",
-    temperature=0.3,  # Balanced creativity/accuracy
-    max_tokens=2000,
-    timeout=60
-)
+class ResearchState(TypedDict):
+    ""State schema for the agent with message accumulation.""
+    messages: Annotated[List, add]      # Messages accumulate across nodes
+    citations: Annotated[List[Dict], add]  # Citations accumulate
+    progress: int                        # Iteration counter
 ```
 
-**Dynamic Model Selection** (Advanced)
-```python
-from langchain.agents.middleware import wrap_model_call
+**Key Concepts:**
+- Annotated[List, add]: Messages append, not replace
+- progress: Prevents infinite loops (max 2 iterations)
+- TypedDict: Type-safe state definition
 
-basic_model = ChatOpenAI(model="gpt-4o-mini")
-advanced_model = ChatOpenAI(model="gpt-4o")
+### 2. **Tools** (src/tools/)
 
-@wrap_model_call
-def dynamic_model(request, handler):
-    # Use advanced model for complex queries
-    if request.state.get("complexity_score", 0) > 7:
-        return handler(request.override(model=advanced_model))
-    return handler(request.override(model=basic_model))
-```
-
-### 2. **Tool Suite**
-
-#### Tool #1: Web Search
-```python
-from langchain.tools import tool
-import requests
-
-@tool
-def web_search(query: str, num_results: int = 5) -> str:
-    """
-    Search the web for information on a given topic.
-    
-    Args:
-        query: The search query
-        num_results: Number of results to return (default: 5)
-    
-    Returns:
-        JSON string with search results including titles, URLs, and snippets
-    """
-    # Implementation using SerpAPI or similar
-    pass
-```
-
-#### Tool #2: Data Calculator
+#### Tool 1: Web Search (search.py)
 ```python
 @tool
-def calculate(expression: str) -> str:
-    """
-    Perform mathematical calculations and data analysis.
-    
-    Args:
-        expression: Mathematical expression to evaluate
-    
-    Returns:
-        Calculation result as string
-    
-    Examples:
-        - "1000 * 1.15" (growth calculations)
-        - "sum([10, 20, 30, 40])" (statistical operations)
-    """
-    pass
+def web_search(query: str) -> str:
+    ""Search the web using DuckDuckGo for current information.""
+    # Fetches DuckDuckGo HTML results
+    # Parses with BeautifulSoup
+    # Returns JSON with title, link, snippet
 ```
 
-#### Tool #3: Web Scraper
+**Use Cases:**
+- Current events and news
+- Product pricing and specs
+- Recent developments
+- Statistical data
+
+#### Tool 2: Web Scraper (scraper.py)
 ```python
 @tool
 def scrape_webpage(url: str) -> str:
-    """
-    Extract main content from a webpage.
-    
-    Args:
-        url: The webpage URL to scrape
-    
-    Returns:
-        Cleaned text content from the webpage
-    """
-    pass
+    ""Extract main content from a specific URL.""
+    # Fetches webpage content
+    # Extracts text with BeautifulSoup
+    # Returns cleaned text content
 ```
 
-#### Tool #4: Document Reader
+**Use Cases:**
+- Detailed article analysis
+- Specific URL content extraction
+- Documentation reading
+
+### 3. **Middleware** (src/middleware/helpers.py)
+
+#### Dynamic System Prompts
 ```python
-@tool
-def read_pdf(file_path: str) -> str:
-    """
-    Extract text content from PDF documents.
-    
-    Args:
-        file_path: Path to the PDF file
-    
-    Returns:
-        Extracted text content
-    """
-    pass
+def get_dynamic_system_prompt(user_level: str = "general") -> str:
+    ""Generate context-aware system prompt.""
+    # Instructs LLM to:
+    # - Use built-in knowledge first
+    # - Call web_search only when needed
+    # - Provide terminal-friendly formatting
+    # - Stop after one tool call
 ```
 
-#### Tool #5: Data Store
+**Output Format Instructions:**
+- NO markdown tables (|, --, etc.)
+- NO asterisks for bold (**text**)
+- Use UPPERCASE for emphasis
+- Clear indentation and spacing
+- Numbered sections with bullets
+
+#### Error Handling
 ```python
-@tool
-def store_finding(key: str, value: str, citation: str) -> str:
-    """
-    Store research findings with citations for later use.
-    
-    Args:
-        key: Category or topic of the finding
-        value: The actual finding or data
-        citation: Source citation
-    
-    Returns:
-        Confirmation message
-    """
-    pass
+def format_tool_error(error: Exception, tool_name: str) -> str:
+    ""Format user-friendly error messages.""
+    # Handles timeouts, not found, permissions
+    # Returns helpful suggestions
 ```
 
-#### Tool #6: Fact Checker
+### 4. **Conversation Memory** (src/utils/memory.py)
+
+#### ConversationMemory Class
 ```python
-@tool
-def verify_fact(claim: str, sources: list[str]) -> str:
-    """
-    Cross-reference a claim against multiple sources.
+class ConversationMemory:
+    ""Manages conversation history storage.""
     
-    Args:
-        claim: The statement to verify
-        sources: List of source URLs to check against
+    def save_conversation(
+        query: str,
+        answer: str,
+        messages: List,
+        conversation_id: str = None,  # Append if provided
+        conversation_name: str = None  # Auto-generate if None
+    ) -> str:
+        ""Save or append to conversation.""
+```
+
+**Storage Format (JSON):**
+```json
+{
+  "id": "20260108_220710",
+  "name": "compare honda and toyota reliability",
+  "created_at": "2026-01-08T22:07:10.123456",
+  "last_updated": "2026-01-08T22:07:29.456789",
+  "exchanges": [
+    {
+      "query": "compare honda and toyota reliability",
+      "answer": "COMPARISON: HONDA VS TOYOTA...",
+      "timestamp": "2026-01-08T22:07:10.123456"
+    },
+    {
+      "query": "which one is better for families",
+      "answer": "FAMILY COMPARISON...",
+      "timestamp": "2026-01-08T22:07:20.234567"
+    }
+  ],
+  "messages": [
+    {"type": "SystemMessage", "content": "You are ResearchPro..."},
+    {"type": "HumanMessage", "content": "compare honda..."},
+    {"type": "AIMessage", "content": "COMPARISON..."}
+  ],
+  "citations": [],
+  "metadata": {
+    "model": "gpt-oss:120b-cloud",
+    "temperature": 0.3,
+    "user_level": "general"
+  }
+}
+```
+
+**Features:**
+- **Auto-naming**: Generates clean names from first query
+- **Multi-turn storage**: All exchanges in one file
+- **Context preservation**: Full message history saved
+- **Metadata tracking**: Model, settings, timestamps
+
+---
+
+##  Conversation Memory System
+
+### Architecture
+
+```
+
+                    USER WORKFLOW                         
+
+                                                      
+      New Query                                        Load Previous
+                                                      
+                                                      
+                         
+  Active Session                             Load Context   
+  (memory buffer)                            from JSON      
+                         
+                                                  
+      context_messages[]                           Deserialize
+                                                   messages
+                                                  
+
+              AGENT PROCESSING                            
+  - Prepends context_messages to new query                
+  - Runs agent graph with full history                    
+  - Generates contextually aware response                 
+
+     
+      After completion
+     
+
+          SAVE TO DISK (conversations/*.json)             
+  IF active_conversation_id:                              
+     Append exchange to existing file                    
+  ELSE:                                                   
+     Create new conversation file                        
+  Update context_messages for next query                  
+
+```
+
+### Session Management
+
+#### Starting a New Conversation
+```python
+agent = create_agent()
+result1 = agent.research("What is Python?")
+# Creates: 20260108_143000.json (new file)
+
+result2 = agent.research("What about Java?")
+# Appends to: 20260108_143000.json (same file)
+```
+
+#### Starting Fresh Session
+```python
+agent.new_chat()  # Clears active_conversation_id & context_messages
+result3 = agent.research("What is JavaScript?")
+# Creates: 20260108_143500.json (new file)
+```
+
+#### Loading Previous Conversation
+```python
+# List conversations
+history = agent.get_conversation_history()
+# [{'id': '20260108_143000', 'name': 'What is Python', 'total_exchanges': 2}, ...]
+
+# Load by ID or number
+agent.load_chat('20260108_143000')  # OR
+agent.load_chat(history[0]['id'])
+
+# Next query has full context!
+result4 = agent.research("Compare them")
+# Agent knows "them" = Python and Java
+```
+
+### Context Loading Mechanism
+
+```python
+def load_chat(conversation_id: str) -> bool:
+    ""Load conversation and restore context.""
+    conv = memory.load_conversation(conversation_id)
     
-    Returns:
-        Verification result with confidence score
-    """
-    pass
-```
-
-### 3. **System Prompt**
-
-```python
-system_prompt = """You are ResearchPro, an expert research assistant specialized in conducting thorough, 
-academic-quality research on any topic. Your capabilities include:
-
-**Research Process:**
-1. Break down complex queries into researchable sub-questions
-2. Search multiple sources for comprehensive coverage
-3. Verify information through cross-referencing
-4. Synthesize findings into coherent insights
-5. Cite all sources properly
-
-**Quality Standards:**
-- Always verify facts from multiple sources
-- Provide citations for every claim
-- Highlight confidence levels (High/Medium/Low)
-- Acknowledge limitations or gaps in research
-- Suggest areas for further investigation
-
-**Output Format:**
-- Executive Summary (2-3 sentences)
-- Detailed Findings (organized by sub-topics)
-- Key Statistics (with sources)
-- Citations (numbered list)
-- Recommendations for further reading
-
-**Tone:** Professional, objective, and informative.
-**Accuracy:** Prioritize factual accuracy over speed.
-"""
-```
-
-### 4. **Custom State Schema**
-
-```python
-from langchain.agents import AgentState
-from typing import TypedDict, List, Dict
-
-class ResearchState(AgentState):
-    """Extended state to track research progress"""
-    messages: List[Dict]  # Conversation history
-    research_progress: Dict[str, bool]  # Track completed sub-tasks
-    citations: List[Dict[str, str]]  # Store citations
-    user_preferences: Dict[str, any]  # User customizations
-    quality_metrics: Dict[str, float]  # Confidence scores
-    complexity_score: int  # For dynamic model selection
-```
-
-### 5. **Middleware Components**
-
-#### Message Trimming Middleware
-```python
-from langchain.agents.middleware import before_model
-
-@before_model
-def trim_messages(state, runtime):
-    """Keep conversation history manageable"""
-    if len(state["messages"]) > 20:
-        # Keep system prompt + last 15 messages
-        return {
-            "messages": [state["messages"][0]] + state["messages"][-15:]
-        }
-```
-
-#### Error Handling Middleware
-```python
-from langchain.agents.middleware import wrap_tool_call
-from langchain.messages import ToolMessage
-
-@wrap_tool_call
-def handle_tool_errors(request, handler):
-    """Gracefully handle tool failures"""
-    try:
-        return handler(request)
-    except Exception as e:
-        return ToolMessage(
-            content=f"Tool encountered an error: {str(e)}. Please try an alternative approach.",
-            tool_call_id=request.tool_call["id"]
-        )
-```
-
-#### Dynamic System Prompt Middleware
-```python
-from langchain.agents.middleware import dynamic_prompt
-
-@dynamic_prompt
-def user_role_prompt(request):
-    """Adjust communication style based on user expertise"""
-    user_level = request.runtime.context.get("expertise_level", "general")
+    # Deserialize saved messages into Message objects
+    self.context_messages = self._deserialize_messages(conv['messages'])
+    # [SystemMessage(...), HumanMessage(...), AIMessage(...), ...]
     
-    if user_level == "expert":
-        return system_prompt + "\n\nUse technical terminology and detailed analysis."
-    elif user_level == "beginner":
-        return system_prompt + "\n\nExplain concepts in simple terms with examples."
-    
-    return system_prompt
+    # Set active ID for appending future queries
+    self.active_conversation_id = conversation_id
+    return True
+
+def _deserialize_messages(serialized: list) -> list:
+    ""Reconstruct Message objects from JSON.""
+    messages = []
+    for msg in serialized:
+        if msg['type'] == 'SystemMessage':
+            messages.append(SystemMessage(content=msg['content']))
+        elif msg['type'] == 'HumanMessage':
+            messages.append(HumanMessage(content=msg['content']))
+        elif msg['type'] == 'AIMessage':
+            messages.append(AIMessage(content=msg['content']))
+        # Skip ToolMessage (not needed for context)
+    return messages
 ```
 
-### 6. **Structured Output**
+**Why This Works:**
+- LangGraph nodes receive full message history
+- LLM sees complete conversation context
+- Follow-up questions make sense without repetition
+- Agent "remembers" previous exchanges
+
+---
+
+##  Technical Implementation
+
+### Agent Graph (LangGraph)
 
 ```python
-from pydantic import BaseModel, Field
-from typing import List
+workflow = StateGraph(ResearchState)
 
-class Citation(BaseModel):
-    """Single citation entry"""
-    id: int
-    title: str
-    url: str
-    accessed_date: str
-    relevance_score: float = Field(ge=0, le=1)
-
-class ResearchFinding(BaseModel):
-    """Individual research finding"""
-    topic: str
-    content: str
-    confidence: str = Field(description="High, Medium, or Low")
-    citations: List[int]  # References to Citation IDs
-
-class ResearchReport(BaseModel):
-    """Complete research report structure"""
-    executive_summary: str = Field(description="2-3 sentence overview")
-    findings: List[ResearchFinding]
-    key_statistics: List[str]
-    citations: List[Citation]
-    recommendations: List[str]
-    limitations: List[str]
+# Node 1: Agent Reasoning
+def agent_node(state: ResearchState) -> dict:
+    ""Main reasoning node.""
+    messages = state["messages"]
+    iteration_count = state.get("progress", 0)
     
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "executive_summary": "AI in healthcare shows...",
-                "findings": [...],
-                "key_statistics": ["Market size: $11B"],
-                "citations": [...],
-                "recommendations": ["Further research on..."],
-                "limitations": ["Limited data from developing countries"]
-            }
-        }
+    # Add system prompt if first message
+    if not isinstance(messages[0], SystemMessage):
+        system_prompt = get_dynamic_system_prompt()
+        messages = [SystemMessage(content=system_prompt)] + messages
+    
+    # After first tool call, force final answer
+    if iteration_count >= 1:
+        has_tool_results = any(m.__class__.__name__ == 'ToolMessage' for m in messages)
+        if has_tool_results:
+            # Add explicit stop instruction
+            force_msg = HumanMessage(content="STOP. Write final answer. NO more tools.")
+            messages = messages + [force_msg]
+            
+            # Invoke WITHOUT tool binding
+            response = self.llm.invoke(messages)
+            return {"messages": [response], "progress": iteration_count + 1}
+    
+    # First iteration - allow tool use
+    response = self.llm_with_tools.invoke(messages)
+    return {"messages": [response], "progress": iteration_count + 1}
+
+# Node 2: Tool Execution
+tool_node = ToolNode([web_search, scrape_webpage])
+
+# Routing Logic
+def should_continue(state: ResearchState) -> Literal["continue", "end"]:
+    ""Route to tools or end.""
+    last_message = state["messages"][-1]
+    iteration_count = state.get("progress", 0)
+    
+    if iteration_count >= 2:  # Max 2 iterations
+        return "end"
+    
+    if hasattr(last_message, "tool_calls") and last_message.tool_calls:
+        return "continue"
+    return "end"
+
+# Build graph
+workflow.add_node("agent", agent_node)
+workflow.add_node("tools", tool_node)
+workflow.set_entry_point("agent")
+workflow.add_conditional_edges("agent", should_continue, {
+    "continue": "tools",
+    "end": END
+})
+workflow.add_edge("tools", "agent")
+graph = workflow.compile()
+```
+
+### Execution Flow
+
+**Example Query: "Compare Honda Civic and Toyota Corolla"**
+
+```
+ITERATION 1 (progress=0):
+  agent_node:
+    - Adds SystemMessage with instructions
+    - Invokes llm_with_tools
+    - LLM returns: AIMessage with tool_call(web_search, "Honda Civic vs Toyota...")
+    - Returns: {"messages": [AIMessage(tool_calls=[...])], "progress": 1}
+  
+  should_continue: Sees tool_calls  returns "continue"
+  
+  tools:
+    - Executes web_search
+    - Returns: ToolMessage with search results
+    - State now has: [SystemMessage, HumanMessage, AIMessage(tool_calls), ToolMessage]
+
+ITERATION 2 (progress=1):
+  agent_node:
+    - Detects iteration_count >= 1
+    - Sees ToolMessage in history
+    - Adds HumanMessage("STOP. Write final answer...")
+    - Invokes llm WITHOUT tools
+    - LLM returns: AIMessage with comprehensive comparison
+    - Returns: {"messages": [AIMessage(final_answer)], "progress": 2}
+  
+  should_continue: iteration_count >= 2  returns "end"
+
+SAVE TO MEMORY:
+  - Extract final answer from last AIMessage
+  - Save to conversations/20260108_143000.json
+  - Update context_messages for next query
 ```
 
 ---
 
-## 🔧 Technical Implementation
+##  Usage Guide
 
-### Complete Agent Setup
+### Basic Usage
 
 ```python
-from langchain.agents import create_agent
-from langchain.agents.structured_output import ToolStrategy
+from agent import create_agent
 
-# Initialize agent with all components
-agent = create_agent(
-    # Core configuration
-    model=model,
-    tools=[
-        web_search,
-        calculate,
-        scrape_webpage,
-        read_pdf,
-        store_finding,
-        verify_fact
-    ],
-    
-    # System configuration
-    system_prompt=system_prompt,
-    state_schema=ResearchState,
-    
-    # Structured output
-    response_format=ToolStrategy(ResearchReport),
-    
-    # Middleware
-    middleware=[
-        trim_messages,
-        handle_tool_errors,
-        user_role_prompt,
-        dynamic_model
-    ],
-    
-    # Context schema
-    context_schema={"expertise_level": str}
-)
+# Create agent
+agent = create_agent()
+
+# Simple query
+result = agent.research("What is machine learning?")
+answer = agent.get_final_answer(result)
+print(answer)
+
+# Conversation ID for reference
+print(f"Saved as: {result['conversation_id']}")
 ```
 
-### Basic Invocation
+### Multi-Turn Conversations
 
 ```python
-# Simple research query
-result = agent.invoke({
-    "messages": [{
-        "role": "user",
-        "content": "Research the impact of AI on healthcare in 2024"
-    }]
-}, context={"expertise_level": "general"})
-
-# Access structured output
-report = result["structured_response"]
-print(report.executive_summary)
-print(f"Found {len(report.findings)} key findings")
-print(f"Cited {len(report.citations)} sources")
-```
-
-### Streaming for Real-time Updates
-
-```python
-# Stream research progress
-for chunk in agent.stream({
-    "messages": [{
-        "role": "user",
-        "content": "Analyze cryptocurrency market trends"
-    }]
-}, stream_mode="values"):
-    
-    latest_message = chunk["messages"][-1]
-    
-    # Show reasoning
-    if hasattr(latest_message, 'content_blocks'):
-        for block in latest_message.content_blocks:
-            if block["type"] == "reasoning":
-                print(f"🤔 Thinking: {block['reasoning']}")
-            elif block["type"] == "text":
-                print(f"📝 Output: {block['text']}")
-    
-    # Show tool usage
-    if hasattr(latest_message, 'tool_calls'):
-        for tool_call in latest_message.tool_calls:
-            print(f"🔧 Using tool: {tool_call['name']}")
-```
-
-### Multi-turn Conversation
-
-```python
-# Maintain conversation context
-conversation_state = {
-    "messages": [],
-    "research_progress": {},
-    "citations": [],
-    "user_preferences": {"detail_level": "comprehensive"},
-    "quality_metrics": {}
-}
+agent = create_agent()
 
 # First query
-query1 = {"messages": [{"role": "user", "content": "Research AI in education"}]}
-conversation_state.update(query1)
-result1 = agent.invoke(conversation_state)
-conversation_state["messages"] = result1["messages"]
+result1 = agent.research("Compare iPhone 15 and Samsung S24")
+conv_id = result1['conversation_id']
 
-# Follow-up query (with context)
-query2 = {"messages": conversation_state["messages"] + [
-    {"role": "user", "content": "What about implementation costs?"}
-]}
-result2 = agent.invoke(query2)
+# Follow-up in same conversation
+result2 = agent.research("Which has better camera?")
+# Same conversation ID, agent has context
+
+result3 = agent.research("What about battery life?")
+# Still same conversation, 3 exchanges total
 ```
 
----
-
-## 📚 Use Cases & Scenarios
-
-### Scenario 1: Academic Research Assistant
-
-**Student Query:**
-```
-"I need to write a literature review on renewable energy adoption in developing countries. 
-Can you help me find recent studies, key statistics, and major challenges?"
-```
-
-**Agent Workflow:**
-1. **Planning:** Break into sub-topics (solar, wind, hydro, policy, economics)
-2. **Search:** web_search() for recent academic papers (2020-2024)
-3. **Analysis:** Extract key findings, statistics, challenges
-4. **Verification:** verify_fact() for critical claims
-5. **Synthesis:** Compile into structured literature review
-6. **Citation:** Generate proper academic citations
-
-**Output:**
-- 15-20 page literature review
-- 40+ citations from peer-reviewed sources
-- Statistical trends with visualizations
-- Gap analysis for future research
-
-### Scenario 2: Business Intelligence
-
-**Manager Query:**
-```
-"Analyze our top 3 competitors' pricing strategies and market positioning. 
-I need this for tomorrow's strategy meeting."
-```
-
-**Agent Workflow:**
-1. **Data Gathering:** scrape_webpage() competitor websites
-2. **Price Analysis:** calculate() pricing models and comparisons
-3. **Market Research:** web_search() recent news and reports
-4. **SWOT Analysis:** Synthesize strengths/weaknesses
-5. **Recommendations:** Strategic insights
-
-**Output:**
-- Competitive analysis matrix
-- Pricing comparison table
-- Market positioning chart
-- Strategic recommendations
-
-### Scenario 3: Technical Documentation
-
-**Developer Query:**
-```
-"Compare FastAPI, Flask, and Django for building RESTful APIs. 
-Include performance benchmarks and use case recommendations."
-```
-
-**Agent Workflow:**
-1. **Documentation Review:** read_pdf() official documentation
-2. **Benchmarking:** web_search() performance comparisons
-3. **Community Insights:** Scrape discussions, GitHub issues
-4. **Code Analysis:** Review example implementations
-5. **Use Case Mapping:** Match frameworks to scenarios
-
-**Output:**
-- Feature comparison matrix
-- Performance benchmark results
-- Best practices guide
-- Decision flowchart
-
----
-
-## 🎓 Teaching Points
-
-### Module 1: Agent Fundamentals
-- **Concept:** Agent = Model + Tools + Memory + Loop
-- **Key Learning:** Understanding the ReAct pattern
-- **Demo:** Simple tool-calling example
-- **Exercise:** Students add a new tool
-
-### Module 2: Model Configuration
-- **Concept:** Static vs Dynamic model selection
-- **Key Learning:** When to use which approach
-- **Demo:** Model switching based on query complexity
-- **Exercise:** Implement temperature-based model selection
-
-### Module 3: Tool Design
-- **Concept:** Effective tool schemas and descriptions
-- **Key Learning:** Clear, specific tool documentation
-- **Demo:** Good vs bad tool implementations
-- **Exercise:** Design a custom research tool
-
-### Module 4: State Management
-- **Concept:** Custom state schemas for memory
-- **Key Learning:** What to track, what to discard
-- **Demo:** Research progress tracking
-- **Exercise:** Add quality metrics to state
-
-### Module 5: Middleware
-- **Concept:** Intercepting and modifying agent behavior
-- **Key Learning:** When to use which middleware hook
-- **Demo:** Message trimming and error handling
-- **Exercise:** Create custom logging middleware
-
-### Module 6: Structured Output
-- **Concept:** Enforcing output format
-- **Key Learning:** Pydantic vs TypedDict vs JSON Schema
-- **Demo:** Research report generation
-- **Exercise:** Design custom output schema
-
-### Module 7: Advanced Patterns
-- **Concept:** Streaming, batching, parallel tool calls
-- **Key Learning:** Performance optimization
-- **Demo:** Real-time research updates
-- **Exercise:** Implement batch research queries
-
----
-
-## 📂 Code Structure
-
-```
-research_pro_agent/
-│
-├── src/
-│   ├── __init__.py
-│   ├── agent.py              # Main agent configuration
-│   ├── models.py             # Model setup and selection
-│   ├── tools/
-│   │   ├── __init__.py
-│   │   ├── search.py         # Web search tools
-│   │   ├── calculator.py     # Mathematical tools
-│   │   ├── scraper.py        # Web scraping tools
-│   │   ├── document.py       # Document processing
-│   │   ├── storage.py        # Data persistence
-│   │   └── verification.py   # Fact-checking
-│   ├── middleware/
-│   │   ├── __init__.py
-│   │   ├── message_manager.py
-│   │   ├── error_handler.py
-│   │   ├── prompt_manager.py
-│   │   └── cache_manager.py
-│   ├── schemas/
-│   │   ├── __init__.py
-│   │   ├── state.py          # Custom state schemas
-│   │   └── output.py         # Output structures
-│   └── utils/
-│       ├── __init__.py
-│       ├── citation.py       # Citation management
-│       ├── metrics.py        # Quality metrics
-│       └── formatting.py     # Output formatting
-│
-├── tests/
-│   ├── test_agent.py
-│   ├── test_tools.py
-│   ├── test_middleware.py
-│   └── test_integration.py
-│
-├── examples/
-│   ├── academic_research.py
-│   ├── business_intelligence.py
-│   ├── technical_docs.py
-│   └── interactive_demo.py
-│
-├── config/
-│   ├── prompts.yaml          # System prompts
-│   ├── models.yaml           # Model configurations
-│   └── tools.yaml            # Tool configurations
-│
-├── docs/
-│   ├── README.md
-│   ├── ARCHITECTURE.md
-│   ├── API_REFERENCE.md
-│   └── TUTORIALS.md
-│
-├── requirements.txt
-├── setup.py
-└── .env.example
-```
-
----
-
-## 🚀 Getting Started
-
-### Installation
-
-```bash
-# Clone repository
-git clone https://github.com/yourname/research-pro-agent
-cd research-pro-agent
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your API keys
-```
-
-### Quick Start
+### Session Management
 
 ```python
-from research_pro_agent import ResearchProAgent
+agent = create_agent()
 
-# Initialize agent
-agent = ResearchProAgent(
-    model="gpt-4o",
-    expertise_level="general"
-)
+# Session 1
+agent.research("What is Python?")
+agent.research("What is Java?")
 
-# Run research
-result = agent.research("Impact of AI on healthcare 2024")
+# Start new session
+agent.new_chat()
+agent.research("What is JavaScript?")  # New conversation file
 
-# Get structured report
-report = result.to_report()
-print(report.executive_summary)
+# List all conversations
+for conv in agent.get_conversation_history():
+    print(f"{conv['name']} - {conv['total_exchanges']} exchanges")
+```
 
-# Save results
-report.save("healthcare_ai_research.pdf")
+### Loading Previous Conversations
+
+```python
+agent = create_agent()
+
+# List conversations
+history = agent.get_conversation_history()
+print("Saved conversations:")
+for i, conv in enumerate(history, 1):
+    print(f"{i}. {conv['name']} ({conv['total_exchanges']} exchanges)")
+
+# Load by number or ID
+agent.load_chat(history[0]['id'])
+
+# Continue conversation
+agent.research("Tell me more")  # Has full context!
+```
+
+### Interactive Mode
+
+```bash
+python examples/interactive_demo.py
+
+# Commands:
+# - Type questions naturally
+# - "list"  View all saved conversations
+# - "load 1"  Continue conversation #1
+# - "new"  Start fresh conversation
+# - "quit"  Exit
 ```
 
 ---
 
-## 🎯 Learning Outcomes
+##  API Reference
 
-After implementing this agent, students will understand:
+### Agent Creation
 
-1. **Agent Architecture:** How components work together
-2. **Tool Design:** Creating effective, reusable tools
-3. **State Management:** Tracking context and memory
-4. **Model Integration:** Static and dynamic model selection
-5. **Middleware:** Extending agent capabilities
-6. **Structured Output:** Enforcing data schemas
-7. **Error Handling:** Graceful failure recovery
-8. **Performance:** Streaming, batching, optimization
-9. **Real-world Application:** Solving practical problems
-10. **Best Practices:** Production-ready code patterns
+```python
+create_agent(
+    model_name: str = "gpt-oss:120b-cloud",
+    temperature: float = 0.3,
+    user_level: str = "general"  # "expert", "beginner", "general"
+) -> ResearchProAgent
+```
+
+### Research Methods
+
+```python
+# Blocking research
+agent.research(
+    query: str,
+    max_iterations: int = 10
+) -> dict  # Returns: {messages, citations, progress, conversation_id}
+
+# Streaming research
+agent.stream_research(query: str) -> Generator
+# Yields: {node_name: state} for each step
+
+# Extract answer
+agent.get_final_answer(state: dict) -> str
+```
+
+### Conversation Management
+
+```python
+# Session control
+agent.new_chat() -> None                    # Start new conversation
+agent.load_chat(conversation_id: str) -> bool  # Load previous conversation
+agent.get_active_conversation_id() -> str   # Get current conversation ID
+
+# History access
+agent.get_conversation_history(limit: int = 50) -> List[dict]
+# Returns: [{'id', 'name', 'timestamp', 'last_updated', 'first_query', 'total_exchanges'}, ...]
+
+agent.load_conversation(conversation_id: str) -> dict
+# Returns: Full conversation data with exchanges, messages, metadata
+
+agent.delete_conversation(conversation_id: str) -> bool
+```
+
+### Configuration
+
+```python
+from agent import AgentConfig, ResearchProAgent
+
+config = AgentConfig(
+    model_name="gpt-oss:120b-cloud",
+    base_url="http://localhost:11434",
+    temperature=0.3,
+    user_level="general",
+    save_conversations=True,
+    storage_dir="conversations"
+)
+
+agent = ResearchProAgent(config)
+```
 
 ---
 
-## 📊 Success Metrics
+##  Teaching Points
 
-### Agent Performance
-- **Response Time:** < 30 seconds for standard queries
-- **Accuracy:** > 90% fact verification rate
-- **Citation Quality:** 100% of claims cited
-- **User Satisfaction:** > 4.5/5 rating
+### 1. **LangChain Fundamentals**
 
-### Learning Effectiveness
-- **Concept Mastery:** 80% understanding of core concepts
-- **Practical Skills:** Students can build similar agents
-- **Code Quality:** Following LangChain best practices
-- **Problem-Solving:** Can debug and extend the agent
+#### StateGraph Pattern
+```python
+from langgraph.graph import StateGraph, END
+
+# Define state schema
+class ResearchState(TypedDict):
+    messages: Annotated[List, add]
+    progress: int
+
+# Create graph
+workflow = StateGraph(ResearchState)
+workflow.add_node("agent", agent_function)
+workflow.add_node("tools", tool_function)
+workflow.set_entry_point("agent")
+```
+
+**Key Concepts:**
+- **State accumulation**: Annotated[List, add] appends, doesn't replace
+- **Nodes**: Functions that receive state, return updates
+- **Edges**: Define flow between nodes
+- **Compilation**: graph = workflow.compile()
+
+#### Tool Calling
+```python
+from langchain_core.tools import tool
+
+@tool
+def web_search(query: str) -> str:
+    ""Search the web for information.""
+    # Implementation
+    return results
+
+# Bind tools to LLM
+llm_with_tools = llm.bind_tools([web_search])
+
+# LLM can now generate tool_calls
+response = llm_with_tools.invoke(messages)
+# response.tool_calls = [{'name': 'web_search', 'args': {'query': '...'}}]
+```
+
+### 2. **Message Management**
+
+#### Message Types
+- SystemMessage: Instructions for LLM behavior
+- HumanMessage: User input
+- AIMessage: LLM responses (may contain tool_calls)
+- ToolMessage: Tool execution results
+
+#### Accumulation Pattern
+```python
+# WRONG - Replaces all messages
+return {"messages": [new_message]}  # State has only 1 message
+
+# RIGHT - Appends to existing messages
+return {"messages": [new_message]}  # With Annotated[List, add], appends!
+```
+
+### 3. **Conversation Persistence**
+
+#### Why JSON?
+- Human-readable
+- Easy to edit/inspect
+- Standard Python serialization
+- Supports nested structures
+
+#### Session vs File
+- **Session**: Active conversation in memory
+- **File**: Persistent storage on disk
+- **Loading**: Deserializes file into session context
+
+### 4. **Context Management**
+
+#### Context Window
+```python
+# Too much context = slow + expensive
+# Too little = no memory
+
+# Solution: Smart context loading
+self.context_messages = deserialize(saved_messages)
+# Only include relevant history
+```
+
+#### Context Awareness
+```python
+# Without context:
+User: "Compare Honda and Toyota"
+Agent: [provides comparison]
+User: "Which is better?"
+Agent: "Better for what? Please specify what you're comparing."
+
+# With context:
+User: "Compare Honda and Toyota"
+Agent: [provides comparison]
+User: "Which is better?"
+Agent: "Based on the comparison, Toyota has better reliability..."
+```
+
+### 5. **Error Handling**
+
+```python
+try:
+    result = agent.research(query)
+except Exception as e:
+    error_msg = format_tool_error(e, "agent")
+    return {"messages": [AIMessage(content=f"Error: {error_msg}")]}
+```
+
+**Best Practices:**
+- Catch specific exceptions
+- Provide user-friendly messages
+- Log detailed errors for debugging
+- Offer recovery suggestions
+
+### 6. **Terminal Formatting**
+
+**Problem**: Markdown doesn't render well in terminals
+```
+**Bold text** renders as **Bold text** (not bold!)
+| Tables | Look | Messy |
+```
+
+**Solution**: Plain text with structure
+```
+COMPARISON: HONDA VS TOYOTA
+
+1. Reliability
+   Honda: 73/100 score
+   Toyota: 84/100 score
+
+2. Price
+   Honda Civic: $24,000
+   Toyota Corolla: $22,000
+```
 
 ---
 
-## 🔮 Future Enhancements
+##  Advanced Topics
 
-1. **Multi-modal Support:** Images, videos, audio
-2. **Voice Interface:** Speech-to-text research queries
-3. **Collaborative Research:** Multi-agent workflows
-4. **Learning System:** Improve from user feedback
-5. **Integration Hub:** Connect to 20+ data sources
-6. **Mobile App:** Research on-the-go
-7. **API Service:** RESTful API for third-party apps
-8. **Visualization Dashboard:** Interactive research insights
+### Custom Tool Development
+
+```python
+from langchain_core.tools import tool
+import requests
+
+@tool
+def custom_api_call(endpoint: str, params: dict) -> str:
+    ""Call a custom API endpoint.""
+    response = requests.get(endpoint, params=params)
+    return response.json()
+
+# Add to agent
+agent.tools.append(custom_api_call)
+agent.llm_with_tools = agent.llm.bind_tools(agent.tools)
+```
+
+### Streaming Implementation
+
+```python
+for state_update in agent.stream_research(query):
+    node_name = list(state_update.keys())[0]
+    state = state_update[node_name]
+    
+    if node_name == "agent":
+        print(" Agent thinking...")
+    elif node_name == "tools":
+        print(" Executing tools...")
+```
+
+### Conversation Export
+
+```python
+def export_to_pdf(conversation_id: str):
+    ""Export conversation to PDF.""
+    conv = agent.load_conversation(conversation_id)
+    
+    # Use reportlab or fpdf
+    pdf = PDF()
+    pdf.add_page()
+    pdf.set_font('Arial', 'B', 16)
+    pdf.cell(0, 10, conv['name'], ln=True)
+    
+    for exchange in conv['exchanges']:
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, f"Q: {exchange['query']}", ln=True)
+        pdf.set_font('Arial', '', 10)
+        pdf.multi_cell(0, 5, exchange['answer'])
+    
+    pdf.output(f"{conversation_id}.pdf")
+```
 
 ---
 
-## 📞 Support & Resources
+##  Troubleshooting
 
-- **Documentation:** Full API reference and tutorials
-- **Video Tutorials:** Step-by-step implementation guide
-- **Community:** Discord channel for questions
-- **Office Hours:** Weekly live coding sessions
-- **GitHub:** Issues and pull requests welcome
+### Common Issues
+
+#### 1. Empty Responses
+**Symptom**: Agent returns empty or incomplete answers
+
+**Causes:**
+- Model not generating final answer
+- Tool results not reaching agent
+- Iteration limit hit too early
+
+**Solution:**
+```python
+# Check iteration count
+if iteration_count >= 1:
+    # Force final answer explicitly
+    force_msg = HumanMessage(content="STOP. Generate final answer NOW.")
+```
+
+#### 2. Lost Context
+**Symptom**: Agent doesn't remember previous queries
+
+**Causes:**
+- Forgot to load conversation
+- Context messages not restored
+- New chat called accidentally
+
+**Solution:**
+```python
+# Always check active conversation
+print(f"Active: {agent.get_active_conversation_id()}")
+
+# Ensure context loaded
+if agent.load_chat(conv_id):
+    print(f"Context messages: {len(agent.context_messages)}")
+```
+
+#### 3. Tool Not Called
+**Symptom**: Agent answers from knowledge, doesn't search
+
+**Causes:**
+- System prompt too restrictive
+- Temperature too low
+- Query doesn't indicate need for search
+
+**Solution:**
+```python
+# Explicit search request
+result = agent.research("Search the web for: latest AI trends 2026")
+
+# Or adjust temperature
+agent = create_agent(temperature=0.5)  # More creative
+```
 
 ---
 
-**This agent demonstrates every major LangChain concept in a practical, real-world application that students can understand, implement, and extend for their own use cases.**
+##  Performance Considerations
+
+### Model Selection
+- **gpt-oss:120b-cloud**: Large, accurate, slower (120B parameters)
+- **llama2**: Medium, fast, good for general use
+- **mistral**: Fast, efficient, good for focused tasks
+
+### Context Window
+- Longer context = Better understanding
+- Longer context = Slower inference
+- Trade-off: Keep ~10-20 messages for balance
+
+### Storage
+- JSON files grow with exchanges
+- Consider archiving old conversations
+- Implement cleanup for very large histories
+
+### Caching
+```python
+# Future enhancement: Cache common queries
+cache = {}
+if query in cache:
+    return cache[query]
+else:
+    result = agent.research(query)
+    cache[query] = result
+```
+
+---
+
+##  Best Practices
+
+### 1. System Prompt Design
+```python
+# BAD: Too vague
+"You are a helpful assistant."
+
+# GOOD: Specific instructions
+"You are ResearchPro. Use built-in knowledge first.
+Call web_search only for current info. Format output
+with clean indentation. Stop after one tool call."
+```
+
+### 2. Conversation Naming
+```python
+# BAD: Generic
+conversation_name = "Chat"
+
+# GOOD: Descriptive
+conversation_name = generate_name_from_query(first_query)
+#  "compare honda civic and toyota corolla"
+```
+
+### 3. Error Messages
+```python
+# BAD: Technical
+"ToolException: HTTP 500 at line 42"
+
+# GOOD: User-friendly
+"The web search tool encountered an issue. 
+Please try again or rephrase your query."
+```
+
+### 4. Context Management
+```python
+# Clear context when appropriate
+if user_says_new_topic:
+    agent.new_chat()
+
+# Load context when continuing
+if user_says_continue:
+    agent.load_chat(last_conversation_id)
+```
+
+---
+
+##  Conclusion
+
+The ResearchPro Agent demonstrates:
+
+ **Modern agent architecture** with LangGraph
+ **Conversation persistence** with JSON storage
+ **Context awareness** across sessions
+ **Clean formatting** for terminal interfaces
+ **Local LLM integration** with Ollama
+ **Production-ready** error handling
+ **Educational value** for learning LangChain
+
+### Next Steps
+
+1. **Add more tools**: Custom APIs, databases, file operations
+2. **Implement caching**: Speed up repeated queries
+3. **Build UI**: Streamlit/Gradio web interface
+4. **Export features**: PDF reports, summaries
+5. **Analytics**: Track tool usage, response times
+6. **Multi-modal**: Add image analysis, document understanding
+
+---
+
+**Happy Building! **
+
+For questions or contributions, see the main README.md file.
