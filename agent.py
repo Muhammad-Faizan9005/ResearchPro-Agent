@@ -1,12 +1,11 @@
 """
-ResearchPro Agent - An intelligent research assistant using LangChain and Ollama Cloud.
+ResearchPro Agent - An intelligent research assistant using LangChain and Ollama.
 
-This agent demonstrates advanced LangChain concepts:
-- Tool Calling with 16 custom tools
-- Structured Output with Pydantic
+This agent demonstrates:
+- Tool Calling with 2 essential tools (web_search, scrape_webpage)
 - State Management with TypedDict
-- Middleware for message handling
-- Ollama Cloud API (llama3.1:8b)
+- Middleware for dynamic prompts
+- Local Ollama (gpt-oss:120b-cloud)
 """
 
 import os
@@ -25,26 +24,9 @@ from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
 
 # Import our custom components
-from src.schemas import ResearchState, ResearchReport
+from src.schemas import ResearchState
 from src.middleware import get_dynamic_system_prompt, format_tool_error
-from src.tools import (
-    web_search,
-    web_search_simple,
-    calculate,
-    percentage_change,
-    compound_growth_rate,
-    scrape_webpage,
-    extract_links,
-    read_pdf,
-    read_text_file,
-    list_directory,
-    store_finding,
-    retrieve_finding,
-    list_all_findings,
-    verify_fact,
-    check_source_credibility,
-    citation_formatter
-)
+from src.tools import web_search, scrape_webpage
 
 
 class AgentConfig:
