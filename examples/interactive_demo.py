@@ -31,6 +31,9 @@ def main():
     
     # Interactive loop
     print("Type your research questions (or 'quit' to exit)")
+    print("Type 'new' to start a new conversation")
+    print("Type 'list' to see previous conversations")
+    print("Type 'load <number>' to continue a conversation (e.g., 'load 1')")
     print("-" * 70)
     print()
     
@@ -48,6 +51,55 @@ def main():
         if query.lower() in ['quit', 'exit', 'q']:
             print("\n👋 Goodbye!")
             break
+        
+        if query.lower() in ['new', 'new chat', 'newchat']:
+            agent.new_chat()
+            print("\n✨ Started new conversation!\n")
+            continue
+        
+        if query.lower() == 'list':
+            history = agent.get_conversation_history()
+            if not history:
+                print("\n📭 No saved conversations yet.\n")
+            else:
+                print("\n📚 Saved Conversations:")
+                print("=" * 70)
+                for i, conv in enumerate(history, 1):
+                    print(f"{i}. [{conv['id']}]")
+                    print(f"   Name: {conv['name']}")
+                    print(f"   Exchanges: {conv['total_exchanges']}")
+                    print(f"   Last updated: {conv['last_updated'][:19]}")
+                    print("-" * 70)
+                print()
+            continue
+        
+        if query.lower().startswith('load '):
+            conv_identifier = query[5:].strip()
+            
+            # Check if it's a number (list index) or conversation ID
+            conv_id = None
+            if conv_identifier.isdigit():
+                # User entered a number from the list
+                idx = int(conv_identifier) - 1
+                history = agent.get_conversation_history()
+                if 0 <= idx < len(history):
+                    conv_id = history[idx]['id']
+                else:
+                    print(f"\n❌ Invalid conversation number: {conv_identifier}\n")
+                    print(f"   Please use a number between 1 and {len(history)}\n")
+                    continue
+            else:
+                # User entered a conversation ID
+                conv_id = conv_identifier
+            
+            if conv_id and agent.load_chat(conv_id):
+                conv = agent.load_conversation(conv_id)
+                print(f"\n✅ Loaded conversation: {conv.get('name', conv_id)}")
+                print(f"   Total exchanges: {len(conv.get('exchanges', []))}")
+                print("   You can now continue this conversation.\n")
+            else:
+                print(f"\n❌ Could not load conversation: {conv_identifier}\n")
+            continue
         
         print()
         print("-" * 70)

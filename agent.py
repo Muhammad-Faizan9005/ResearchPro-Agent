@@ -62,6 +62,8 @@ class ResearchProAgent:
         
         # Initialize conversation memory
         self.memory = ConversationMemory(self.config.storage_dir) if self.config.save_conversations else None
+        self.active_conversation_id = None  # Track current conversation session
+        self.context_messages = []  # Store loaded conversation context
         
         # Initialize local Ollama LLM
         self.llm = ChatOllama(
@@ -186,9 +188,12 @@ class ResearchProAgent:
         Returns:
             Final state with messages and results
         """
-        # Initialize state
+        # Initialize state with context messages if available
+        initial_messages = self.context_messages.copy() if self.context_messages else []
+        initial_messages.append(HumanMessage(content=query))
+        
         initial_state = {
-            "messages": [HumanMessage(content=query)],
+            "messages": initial_messages,
             "citations": [],
             "progress": 0
         }
@@ -212,9 +217,15 @@ class ResearchProAgent:
                         "model": self.config.model_name,
                         "temperature": self.config.temperature,
                         "user_level": self.config.user_level
-                    }
+                    },
+                    conversation_id=self.active_conversation_id  # Append to active session
                 )
+                # Update active conversation ID
+                self.active_conversation_id = conversation_id
                 final_state["conversation_id"] = conversation_id
+            
+            # Update context messages for next query in conversation
+            self.context_messages = final_state["messages"].copy()
             
             return final_state
         except Exception as e:
@@ -246,8 +257,12 @@ class ResearchProAgent:
         Yields:
             State updates as they occur
         """
+        # Initialize state with context messages if available
+        initial_messages = self.context_messages.copy() if self.context_messages else []
+        initial_messages.append(HumanMessage(content=query))
+        
         initial_state = {
-            "messages": [HumanMessage(content=query)],
+            "messages": initial_messages,
             "citations": [],
             "progress": 0
         }
@@ -272,8 +287,12 @@ class ResearchProAgent:
                         "model": self.config.model_name,
                         "temperature": self.config.temperature,
                         "user_level": self.config.user_level
-                    }
+                    },
+                    conversation_id=self.active_conversation_id  # Append to active session
                 )
+                # Update active conversation ID and context
+                self.active_conversation_id = conversation_id
+                self.context_messages = last_node_state["messages"].copy()
     
     def get_conversation_history(self, limit: int = 50) -> list:
         """Get list of saved conversations."""
@@ -292,6 +311,56 @@ class ResearchProAgent:
         if not self.memory:
             return False
         return self.memory.delete_conversation(conversation_id)
+    
+    def new_chat(self) -> None:
+        """Start a new conversation session. Next queries will create a new conversation file."""
+        self.active_conversation_id = None
+        self.context_messages = []  # Clear conversation context
+    
+    def load_chat(self, conversation_id: str) -> bool:
+        """Load a previous conversation and continue from it.
+        
+        Args:
+            conversation_id: The conversation ID to load
+        
+        Returns:
+            True if loaded successfully, False otherwise
+        """
+        if not self.memory:
+            return False
+        
+        conv = self.memory.load_conversation(conversation_id)
+        if conv:
+            self.active_conversation_id = conversation_id
+            # Load messages from saved conversation
+            if "messages" in conv and conv["messages"]:
+                # Reconstruct message objects from serialized data
+                self.context_messages = self._deserialize_messages(conv["messages"])
+            else:
+                self.context_messages = []
+            return True
+        return False
+    
+    def _deserialize_messages(self, serialized_messages: list) -> list:
+        """Reconstruct message objects from serialized data."""
+        messages = []
+        for msg in serialized_messages:
+            if isinstance(msg, dict):
+                msg_type = msg.get("type", "")
+                content = msg.get("content", "")
+                
+                if msg_type == "SystemMessage":
+                    messages.append(SystemMessage(content=content))
+                elif msg_type == "HumanMessage":
+                    messages.append(HumanMessage(content=content))
+                elif msg_type == "AIMessage":
+                    messages.append(AIMessage(content=content))
+                # Skip ToolMessage as they are not needed for context
+        return messages
+    
+    def get_active_conversation_id(self) -> str:
+        """Get the current active conversation ID."""
+        return self.active_conversation_id
 
 
 # Convenience function for quick usage
