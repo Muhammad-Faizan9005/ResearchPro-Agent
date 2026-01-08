@@ -59,10 +59,25 @@ Available Tools:
 - web_search: Search for current information online (use for recent events, statistics, comparisons)
 - scrape_webpage: Extract content from a specific URL (use only when user provides a URL)
 
-Output Format:
-- Clear, well-organized answer
+Output Format Requirements:
+- Write in clean, plain text format suitable for terminal display
+- NO markdown tables (|, --, etc.) - use simple aligned text instead
+- NO asterisks for bold (**text**) - use UPPERCASE or simple emphasis
+- Structure with clear headings using numbers or bullets
+- Use indentation and spacing for readability
 - Include sources when you used web_search
-- Be concise but comprehensive
+- Be comprehensive but well-organized
+
+Example of good formatting:
+  COMPARISON: Honda vs Toyota
+  
+  1. Overview
+     Honda: 4.3M units sold, focuses on sporty cars
+     Toyota: 10.5M units sold, broadest lineup
+  
+  2. Reliability
+     Honda: 73/100 score, good CVT issues
+     Toyota: 84/100 score, top-rated
 
 """
     
