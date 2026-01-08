@@ -17,9 +17,7 @@ from typing_extensions import TypedDict
 load_dotenv()
 
 from langchain_ollama import ChatOllama
-from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
-from langchain_core.tools import tool
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
 
@@ -36,13 +34,11 @@ class AgentConfig:
         self,
         model_name: str = "gpt-oss:120b-cloud",
         base_url: str = "http://localhost:11434",
-        api_key: str = None,
         temperature: float = 0.3,
         user_level: Literal["expert", "beginner", "general"] = "general"
     ):
         self.model_name = model_name
         self.base_url = base_url
-        self.api_key = api_key or os.getenv("OLLAMA_API_KEY")
         self.temperature = temperature
         self.user_level = user_level
 
@@ -52,30 +48,19 @@ class ResearchProAgent:
     Main ResearchPro Agent class.
     
     This agent uses a ReAct (Reasoning + Acting) pattern to conduct research.
-    It can search the web, calculate numbers, scrape pages, read documents,
-    store findings, and verify facts.
+    It can search the web and scrape pages to gather information.
     """
     
     def __init__(self, config: AgentConfig = None):
         """Initialize the ResearchPro Agent."""
         self.config = config or AgentConfig()
         
-        # Initialize the LLM - use OpenAI client for cloud, Ollama for local
-        if self.config.api_key:
-            # Ollama Cloud uses OpenAI-compatible API
-            self.llm = ChatOpenAI(
-                model=self.config.model_name,
-                base_url=f"{self.config.base_url}/v1",
-                api_key=self.config.api_key,
-                temperature=self.config.temperature
-            )
-        else:
-            # Local Ollama instance
-            self.llm = ChatOllama(
-                model=self.config.model_name,
-                base_url=self.config.base_url,
-                temperature=self.config.temperature
-            )
+        # Initialize local Ollama LLM
+        self.llm = ChatOllama(
+            model=self.config.model_name,
+            base_url=self.config.base_url,
+            temperature=self.config.temperature
+        )
         
         # Bind only essential tools to the LLM
         self.tools = [
@@ -256,17 +241,12 @@ def create_agent(
     Create a ResearchPro Agent with custom configuration.
     
     Args:
-        model_name: Ollama model to use (default: gemma2:2b)
+        model_name: Ollama model to use (default: gpt-oss:120b-cloud)
         temperature: LLM temperature (0.0-1.0)
         user_level: User expertise level ("expert", "beginner", "general")
     
     Returns:
         Configured ResearchProAgent instance
-    
-    Example:
-        >>> agent = create_agent(temperature=0.5, user_level="beginner")
-        >>> result = agent.research("What is photosynthesis?")
-        >>> print(agent.get_final_answer(result))
     """
     config = AgentConfig(
         model_name=model_name,
